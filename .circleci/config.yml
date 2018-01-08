@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: viniciusam/oracledb:11g-xe-r2
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKER_PASSWORD
+    steps:
+      - checkout
+      - run: sqlplus -v
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
