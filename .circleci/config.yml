@@ -1,19 +1,21 @@
+docker_images: &docker_images
+  docker:
+    - image: viniciusam/oracledb:client-tools
+      auth: &docker_auth
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+    - image: viniciusam/oracledb:12c-se-r1
+      auth: *docker_auth
+
 version: 2
 jobs:
   build:
-    docker:
-      - image: viniciusam/oracledb:client-tools
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
-      - image: viniciusam/oracledb:11g-xe-r2
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKER_PASSWORD
+    <<: *docker_images
     steps:
       - checkout
       - run: sql -v
       - run: java -version
+      - run: .circleci/start_db.sh
       - run: |
           sql system/oracle <<EOF
           select sysdate from dual;
